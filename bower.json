@@ -2,6 +2,7 @@
   "name": "angular-boilerplate",
   "version": "0.1",
   "dependencies": {
+    "angular-mocks": "*",
     "angular": "*",
     "ui-router": "*",
     "angular-jwt": "*",

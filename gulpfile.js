@@ -13,6 +13,7 @@ var FILEPATHS = {
 	JS: ['./app/**/*.module.js', './app/**/*.js'],
 	HTML: './app/**/*.html',
 	OUTPUT_DIR: './dist/',
+	KARMA_OUTPUT_DIR: './karma/src/',
 	OUTPUT_JS: 'app-dist.js',
 	OUTPUT_TEMPLATES: 'app-templates.js'
 };
@@ -64,11 +65,26 @@ gulp.task('dev-js', function() {
 			.pipe(gulp.dest(FILEPATHS.OUTPUT_DIR));
 });
 
+gulp.task('dev-karma-js', function() {
+	return gulp.src(FILEPATHS.JS)
+		.pipe(concat(FILEPATHS.OUTPUT_JS))
+		.pipe(babel({presets:['es2015'], compact: false}))
+		.on('error', swallowError)
+		.pipe(gulp.dest(FILEPATHS.KARMA_OUTPUT_DIR));
+});
+
 gulp.task('dev-html', function() {
 	return gulp.src(FILEPATHS.HTML)
 			.pipe(templateCache(templateCacheSettings))
 			.pipe(concat(FILEPATHS.OUTPUT_TEMPLATES))
 			.pipe(gulp.dest(FILEPATHS.OUTPUT_DIR));
+});
+
+gulp.task('dev-karma-html', function() {
+	return gulp.src(FILEPATHS.HTML)
+		.pipe(templateCache(templateCacheSettings))
+		.pipe(concat(FILEPATHS.OUTPUT_TEMPLATES))
+		.pipe(gulp.dest(FILEPATHS.KARMA_OUTPUT_DIR));
 });
 
 gulp.task('lint', function() {
@@ -77,9 +93,11 @@ gulp.task('lint', function() {
 		.pipe(jshint.reporter('default'));
 });
 
-gulp.task('watch', ['dev-js', 'dev-html'], function() {
+gulp.task('watch', ['dev-js', 'dev-karma-js', 'dev-html', 'dev-karma-html'], function() {
 	gulp.watch(FILEPATHS.JS, ['dev-js']);
+	gulp.watch(FILEPATHS.JS, ['dev-karma-js']);
 	gulp.watch(FILEPATHS.HTML, ['dev-html']);
+	gulp.watch(FILEPATHS.HTML, ['dev-karma-html']);
 });
 
 gulp.task('dist', ['dist-js', 'dist-html']);
